@@ -3,6 +3,8 @@
 struct CowsAndBullsAnswer {
     unsigned int cows;
     unsigned int bulls;
+    unsigned int result[4];
+    unsigned int turns_counter;
 };
 
 class IAskNumber {
@@ -53,7 +55,8 @@ public:
 
     CowsAndBullsAnswer Ask(unsigned int number[4]) const override {
         CowsAndBullsAnswer l = {};
-        int turns_counter = 0;
+        l.turns_counter = 0;
+        l.result;
         unsigned int result[4];
         int c = 0;
         do {
@@ -61,42 +64,36 @@ public:
             do {
                 for (int i = 0; i < 4; ++i) {
                     number[i] = rand() % 9;
-                    turns_counter++;
+                    l.turns_counter++;
                 }
             } while (number[3] != this->operator[](3));
-            result[3] = number[3];
+            l.result[3] = number[3];
 
             do {
                 for (int i = 0; i < 3; ++i) {
                     number[i] = rand() % 9;
-                    turns_counter++;
+                    l.turns_counter++;
                 }
             } while (number[2] != this->operator[](2));
-            result[2] = number[2];
+            l.result[2] = number[2];
 
             do {
                 for (int i = 0; i < 2; ++i) {
                     number[i] = rand() % 9;
-                    turns_counter++;
+                    l.turns_counter++;
                 }
             } while (number[1] != this->operator[](1));
-            result[1] = number[1];
+            l.result[1] = number[1];
 
             do {
                 for (int i = 0; i < 1; ++i) {
                     number[i] = rand() % 9;
-                    turns_counter++;
+                    l.turns_counter++;
                 }
             } while (number[0] != this->operator[](0));
-            result[0] = number[0];
+            l.result[0] = number[0];
             c = 4;
         } while (c != 4);
-        std::cout << "computer guessed ur number! it is:" << std::endl;
-        for (int i = 0; i < 4; ++i) {
-            std::cout << result[i];
-        } 
-        std::cout << "\n";
-        std::cout << turns_counter << " turns used to guess" << std::endl;
         return l;
     }
 };
@@ -143,7 +140,14 @@ int main() {
     for (int i = 0; i < 4; i++) {
         std::cin >> n[i];
     }
+
     CowsAndBullsLivePlayer p2(n);
     auto computer_answer = p2.Ask(n);
+    std::cout << "computer guessed ur number! it is:" << std::endl;
+    for (int i = 0; i < 4; ++i) {
+        std::cout << computer_answer.result[i];
+    }
+    std::cout << "\n";
+    std::cout << computer_answer.turns_counter << " turns used to guess" << std::endl;
     return 0;
 }
