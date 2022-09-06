@@ -53,44 +53,23 @@ public:
     CowsAndBullsLivePlayer(unsigned int n[4]) : CowsAndBullsPlayer(n) {}
 
     CowsAndBullsAnswer Ask(unsigned int number[4]) const override {
-        CowsAndBullsAnswer counter2 = {};
+        CowsAndBullsAnswer counter = {};
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
-                std::cout << number[i] << " " << this->operator[](j) << std::endl;
                 if (number[i] == this->operator[](j)) {
                     if (i == j) {
-                        counter2.bulls++;
-                        counter2.index_number[i] = 1;
+                        counter.bulls++;
                     }
                     else {
-                        counter2.cows++;
-                        counter2.index_number[i] = 2;
+                        counter.cows++;
                     }
                 }
             }
         }
-        return counter2;
+        return counter;
     }
 
-    int CowsAndBullsComputerNumber(CowsAndBullsAnswer c, unsigned int number[4]) {
-        unsigned int compairing[4];
-        unsigned int result[4];
-
-        for (int i = 0; i < 4; i++) {
-            if (c.index_number[i] == 2) {
-                compairing[i] = number[i];
-                for (int i = 0; i < 4; i++) {
-                    for (int j = 0; j < 4; j++) {
-                        if (this->operator[](j) == compairing[i]) {
-                            compairing[i] = result[i];
-                        }
-                    }
-                }
-                
-            }
-        }
-        return result[4];
-    };
+    int CowsAndBullsComputerNumber(CowsAndBullsAnswer c, unsigned int number[4]) { }
 };
 
 int main() {
