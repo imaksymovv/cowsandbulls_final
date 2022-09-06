@@ -3,7 +3,6 @@
 struct CowsAndBullsAnswer {
     unsigned int cows;
     unsigned int bulls;
-    unsigned int index_number[4];
 };
 
 class IAskNumber {
