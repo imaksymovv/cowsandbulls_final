@@ -67,8 +67,6 @@ public:
         }
         return counter;
     }
-
-    int CowsAndBullsComputerNumber(CowsAndBullsAnswer c, unsigned int number[4]) { }
 };
 
 int main() {
@@ -130,8 +128,6 @@ int main() {
                 }
             }
         }
-        
-        p2.CowsAndBullsComputerNumber(p2.Ask(n), n);
         c++;
     } while (c != 1 );
     return 0;
