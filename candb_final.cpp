@@ -3,8 +3,7 @@
 struct CowsAndBullsAnswer {
     unsigned int cows;
     unsigned int bulls;
-    unsigned int result[4];
-    unsigned int turns_counter;
+    unsigned int index_number[4];
 };
 
 class IAskNumber {
@@ -33,13 +32,13 @@ public:
             for (int i = 0; i < 4; i++) {
                 for (int j = 0; j < 4; j++) {
                     if (number[i] == this->operator[](j)) {
-                        counter.cows++;
+                        if (j == i) {
+                            counter.bulls++;
+                        }
+                        else {
+                            counter.cows++;
+                        }
                     }
-                }
-            }
-            for (int i = 0; i < 4; ++i) {
-                if (number[i] == this->operator[](i)) {
-                    counter.bulls++;
                 }
             }
         return counter;
@@ -54,48 +53,47 @@ public:
     CowsAndBullsLivePlayer(unsigned int n[4]) : CowsAndBullsPlayer(n) {}
 
     CowsAndBullsAnswer Ask(unsigned int number[4]) const override {
-        CowsAndBullsAnswer l = {};
-        l.turns_counter = 0;
-        l.result;
-        unsigned int result[4];
-        int c = 0;
-        do {
-
-            do {
-                for (int i = 0; i < 4; ++i) {
-                    number[i] = rand() % 9;
-                    l.turns_counter++;
+        CowsAndBullsAnswer counter2 = {};
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                std::cout << "\n";
+                std::cout << number[i] << " " << this->operator[](j) << std::endl;
+                if (number[i] == this->operator[](j)) {
+                    if (i == j) {
+                        counter2.bulls++;
+                        counter2.index_number[i] = 1;
+                    }
+                    else {
+                        counter2.cows++;
+                        counter2.index_number[i] = 2;
+                    }
                 }
-            } while (number[3] != this->operator[](3));
-            l.result[3] = number[3];
-
-            do {
-                for (int i = 0; i < 3; ++i) {
-                    number[i] = rand() % 9;
-                    l.turns_counter++;
-                }
-            } while (number[2] != this->operator[](2));
-            l.result[2] = number[2];
-
-            do {
-                for (int i = 0; i < 2; ++i) {
-                    number[i] = rand() % 9;
-                    l.turns_counter++;
-                }
-            } while (number[1] != this->operator[](1));
-            l.result[1] = number[1];
-
-            do {
-                for (int i = 0; i < 1; ++i) {
-                    number[i] = rand() % 9;
-                    l.turns_counter++;
-                }
-            } while (number[0] != this->operator[](0));
-            l.result[0] = number[0];
-            c = 4;
-        } while (c != 4);
-        return l;
+            }
+        }
+        std::cout <<"cows: "<< counter2.cows << " bulls: " << counter2.bulls << std::endl;
+        return counter2;
     }
+
+    int CowsAndBullsComputerNumber(CowsAndBullsAnswer c, unsigned int number[4]) {
+        unsigned int compairing[4];
+        unsigned int result[4];
+
+        for (int i = 0; i < 4; i++) {
+            std::cout << c.index_number[i];
+            if (c.index_number[i] == 2) {
+                compairing[i] = number[i];
+                for (int i = 0; i < 4; i++) {
+                    for (int j = 0; j < 4; j++) {
+                        if (this->operator[](j) == compairing[i]) {
+                            compairing[i] = result[i];
+                        }
+                    }
+                }
+                
+            }
+        }
+        return result[4];
+    };
 };
 
 int main() {
@@ -124,30 +122,49 @@ int main() {
         }
 
         auto answer = p1.Ask(n);
-        answer.cows = answer.cows - answer.bulls;
         std::cout << "cows: " << answer.cows << " bulls: " << answer.bulls << std::endl;
         if (answer.bulls != 4) {
-            answer.cows = 0;
-            answer.bulls = 0;
+            std::cout << "try again" << std::endl;
         }
         else {
             exit = true;
         }
-    } while (exit == false);
+    } while (!exit);
     std::cout << "you guessed it! now its computer's turn to guess" << std::endl;
 
     std::cout << "Enter your number" << std::endl;
     for (int i = 0; i < 4; i++) {
         std::cin >> n[i];
     }
-
+    exit = false;
     CowsAndBullsLivePlayer p2(n);
-    auto computer_answer = p2.Ask(n);
-    std::cout << "computer guessed ur number! it is:" << std::endl;
+    do {
+        int c = 0;
+        for (int i = 0; i < 4; i++) {
+            std::cout << n[i] << " ";
+        }
+        for (int i = 0; i < 4; ++i) {
+            n[i] = 1 + rand() % 9;
+            for (int j = 0; j < i; j++) {
+                if (n[j] == n[i]) {
+                    do {
+                        n[i] = 1 + rand() % 9;
+                    } while (n[i] == n[j]);
+                }
+            }
+        }
+        
+        p2.CowsAndBullsComputerNumber(p2.Ask(n), n);
+        c++;
+        if (c == 2) {
+            exit = true;
+        }
+    } while (!exit);
+   /* std::cout << "computer guessed ur number! it is:" << std::endl;
     for (int i = 0; i < 4; ++i) {
         std::cout << computer_answer.result[i];
     }
     std::cout << "\n";
-    std::cout << computer_answer.turns_counter << " turns used to guess" << std::endl;
+    std::cout << computer_answer.turns_counter << " turns used to guess" << std::endl;*/
     return 0;
 }
