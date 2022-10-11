@@ -25,6 +25,10 @@ public:
                 }
             }
         }
+        for (size_t i = 0; i < 4; i++) {
+            std::cout << static_cast<short>(num[i]);
+        }
+        std::cout << "\n";
         return counter;
     }
     unsigned int operator[](size_t index) const {
@@ -40,51 +44,95 @@ private:
 
 class CowsAndBullsComputerPlayer : public CowsAndBullsPlayer {
 public:
-     CowsAndBullsComputerHelper computer_number() {
-         CowsAndBullsComputerHelper r = {};
-        for (int i = 0; i < 4; ++i) {
-            r.computer[i] = 1 + rand() % 9;
-            for (int j = 0; j < i; j++) {
-                if (r.computer[j] == r.computer[i]) {
-                    do {
-                        r.computer[i] = 1 + rand() % 9;
-                    } while (r.computer[i] == r.computer[j]);
-                }
-            }
-        }
-        return r;
-    }
-
      CowsAndBullsComputerHelper computer_guessing(CowsAndBullsAnswer k, CowsAndBullsComputerHelper r) {
-         if (k.bulls == 0) {
+         //CowsAndBullsComputerHelper r = { };
+         if (end == true) {
+             if (k.bulls >= 1) {
+                 end = false;
+                 return r;
+             }
              for (int i = 0; i < 4; ++i) {
                  r.computer[i] = 1 + rand() % 9;
                  for (int j = 0; j < i; j++) {
                      if (r.computer[j] == r.computer[i]) {
-                         do {
-                             r.computer[i] = 1 + rand() % 9;
-                         } while (r.computer[i] == r.computer[j]);
+                         i--;
+                         break;
                      }
                  }
              }
+             for (size_t i = 0; i < 4; i++) {
+                 memory[i] = r.computer[i];
+             }
              return r;
          }
+         if (i != 4) {
+             //std::cout << static_cast<short>(k.bulls) << std::endl;
+             if (b == 0) {
+                 b = k.bulls;
+             }
+             if (k.bulls < b) {
+                 checking[i] = memory[i];
+                 index[i] = 1;
+                 if (index[i] != 1) {
+                     index[i] = 0;
+                 }
+             }
+             if (k.bulls > b) {
+                 checking[i] = r.computer[i];
+                 index[i] = 1;
+                 if (index[i] != 1) {
+                     index[i] = 0;
+                 }
+             }
+             for (size_t i = 0; i < 4; i++) {
+                 r.computer[i] = memory[i];
+             }
+             i++;
+             r.computer[i] = substitute;//заменить на число которого нету в числе
+             for (size_t i = 0; i < 4; i++) {
+                 std::cout << static_cast<short>(checking[i]);
+             }
+             std::cout << "\n";
+         }
          else {
-             //for (size_t i = 0; i < 4; i++) {
-               //  memory[i] = r.computer[i];
-             //}
-             k.bulls = 4;
+             if (end == false) {
+                 b = k.bulls;
+                 end = true;
+             }
+             if (k.cows >= 1) {
+                 if (c == 0) {
+                     c = k.cows;
+                 }
+                 if (c > k.cows) {
+                     r.computer[j] = memory[j];
+                 }
+                 else {
+                     j++;
+                     r.computer[j] = substitute;
+                 }
+             }
+             else {
+                 for (size_t i = 0; i < 4; i++) {
+                     if (index[i] == 1) {
+                         r.computer[i] = checking[i];
+                     }
+                     else {
+                         r.computer[i] = 1 + rand() % 9;
+                         for (int j = 0; j < i; j++) {
+                             if (r.computer[j] == r.computer[i]) {
+                                 do {
+                                     r.computer[i] = 1 + rand() % 9;
+                                 } while (r.computer[i] == r.computer[j]);
+                             }
+                         }
+                     }
+                 }
+                 for (size_t i = 0; i < 4; i++) {
+                     memory[i] = r.computer[i];
+                 }
+             }
          }
-         /*if (b == 0) {
-             b = k.bulls;
-         }
-         if (k.bulls < b) {
-             t.result[i] = t.memory[i];
-         }
-         if (k.bulls > b) {
-             t.result[i] = t.computer[i];
-         }
-         i++;*/
+         
          return r;
      }
 
@@ -93,8 +141,13 @@ public:
 private:
     unsigned char b = 0;
     unsigned char memory[4];
+    unsigned char checking[4];
+    unsigned char index[4];
     unsigned char c = 0;
-    //int i = -1;
+    bool end = true;
+    const unsigned char substitute = 1;
+    int i = -1;
+    int j = -1;
 };
 
 class CowsAndBullsLivePlayer : public CowsAndBullsPlayer {
@@ -108,18 +161,14 @@ int main() {
     CowsAndBullsComputerHelper t = {};
     unsigned char n[4];
     unsigned short input = 0;
-    unsigned char guess[4];
-    unsigned char answer[4];
-    constexpr unsigned char o = 1;
 
     for (int i = 0; i < 4; ++i) {
         input = 1 + rand() % 9;
         n[i] = input;
         for (int j = 0; j < i; j++) {
             if (n[j] == n[i]) {
-                do {
-                    n[i] = 1 + rand() % 9;
-                } while (n[i] == n[j]);
+                i--;
+                break;
             }
         }
     }
@@ -152,11 +201,11 @@ int main() {
     }
     CowsAndBullsLivePlayer p2(n);
     exit = false;
-    
-    do{
+    do {
         t = p1.computer_guessing(p, t);
         p = p2.Ask(t.computer);
     } while (p.bulls != 4);
+    //} while (p.bulls != 4);
     /*do {
       t = p1.computer_number();
       p = p2.Ask(t.computer);
