@@ -29,6 +29,8 @@ public:
             std::cout << static_cast<short>(num[i]);
         }
         std::cout << "\n";
+        std::cout << "cows: " << static_cast<unsigned short>(counter.cows) << " bulls: " << static_cast<unsigned short>(counter.bulls) << std::endl;
+
         return counter;
     }
     unsigned int operator[](size_t index) const {
@@ -45,10 +47,26 @@ private:
 class CowsAndBullsComputerPlayer : public CowsAndBullsPlayer {
 public:
      CowsAndBullsComputerHelper computer_guessing(CowsAndBullsAnswer k, CowsAndBullsComputerHelper r) {
-         //CowsAndBullsComputerHelper r = { };
+         //CowsAndBullsComputerHelper r = previous; - переделать с одной
          if (end == true) {
              if (k.bulls >= 1) {
                  end = false;
+                 for (size_t i = 0; i < 4; i++) {
+                     r.computer[i] = memory[i];
+                 }
+                 for (size_t i = 0; i < 4; i++) {
+                     previous.computer[i] = r.computer[i];
+                 }
+                 for(size_t i = 0; i < 4; i++){
+                     substitute = 1 + rand() % 9;
+                     for (int j = 0; j < 4; j++) {
+                         if (substitute == r.computer[j]) {
+                             i--;
+                             break;
+                         }
+                     }
+                 }
+                 std::cout << "SUBSTITUTE " << static_cast<short>(substitute) << std::endl;
                  return r;
              }
              for (int i = 0; i < 4; ++i) {
@@ -62,6 +80,9 @@ public:
              }
              for (size_t i = 0; i < 4; i++) {
                  memory[i] = r.computer[i];
+             }
+             for (size_t i = 0; i < 4; i++) {
+                 previous.computer[i] = r.computer[i];
              }
              return r;
          }
@@ -88,51 +109,119 @@ public:
                  r.computer[i] = memory[i];
              }
              i++;
-             r.computer[i] = substitute;//заменить на число которого нету в числе
-             for (size_t i = 0; i < 4; i++) {
-                 std::cout << static_cast<short>(checking[i]);
+             r.computer[i] = substitute;     
+             if (i == 4) {
+                 std::cout << "part 2" << std::endl;
              }
-             std::cout << "\n";
          }
          else {
-             if (end == false) {
-                 b = k.bulls;
-                 end = true;
+             if (start == true) {
+                 int i = j;
+                 int i1 = 0;
+                 if (index[i1] == 1) {
+
+                 }
+                 else {
+                     r.computer[i1] = memory[i];
+                 }
+                 i1++;
+                 if (i1 == 4) {
+                     start = false;
+                 }
              }
-             if (k.cows >= 1) {
+             if (start1 == true) {
+                 j = 0;
+                 for (size_t i = 0; i < 4; i++) {
+                     r.computer[i] = memory[i];
+                 }
+                 if (index[j] == 1) {
+
+                 }
+                 else {
+                     r.computer[j] = substitute;
+                 }
+                 j++;
+                 if (j == 4) {
+                     start1 = false;
+                 }
+             }
+             if (end1 == false) {
+                 b = k.bulls;
+                 end1 = true;
+             }
+             if (k.bulls > b) {
+                 checking[j] = r.computer[j];
+                 index[j] = 1;
+                 if (index[j] != 1) {
+                     index[j] = 0;
+                 }
+                 end1 = false;
+             }
+             if (k.cows >= 1 && start == false && start1 == false) {
                  if (c == 0) {
                      c = k.cows;
                  }
                  if (c > k.cows) {
-                     r.computer[j] = memory[j];
+                    start = true;
+                    return r;
+                 }
+                 if (c < k.cows) {
+                     start1 = true;
+                     return r;
+                 }
+                 for (size_t i = 0; i < 4; i++) {
+                    r.computer[i] = memory[i];
+                 }
+                 j++;
+                 if (j >= 4) {
+                      j = 0;
+                 }
+                 if (index[j] == 1) {
+
                  }
                  else {
-                     j++;
                      r.computer[j] = substitute;
                  }
              }
-             else {
+             if(k.cows == 0) {
                  for (size_t i = 0; i < 4; i++) {
                      if (index[i] == 1) {
                          r.computer[i] = checking[i];
-                     }
-                     else {
-                         r.computer[i] = 1 + rand() % 9;
-                         for (int j = 0; j < i; j++) {
-                             if (r.computer[j] == r.computer[i]) {
+                         for (size_t j = 0; j < i; j++) {
+                             if (r.computer[i] == r.computer[j]) {
                                  do {
-                                     r.computer[i] = 1 + rand() % 9;
+                                     r.computer[j] = 1 + rand() % 9;
                                  } while (r.computer[i] == r.computer[j]);
                              }
                          }
                      }
+                     else {
+                         r.computer[i] = 1 + rand() % 9;
+                         for (size_t j = 0; j < i; j++) {
+                             if (r.computer[i] == r.computer[j]) {
+                                 i--;
+                                 break;
+                             }
+                         }
+                     }
+                 }
+                 for (size_t i = 0; i < 4; i++) {
+                      substitute = 1 + rand() % 9;
+                      for (int j = 0; j < 4; j++) {
+                          if (substitute == r.computer[j]) {
+                              i--;
+                              break;
+                          }
+                      }
                  }
                  for (size_t i = 0; i < 4; i++) {
                      memory[i] = r.computer[i];
                  }
              }
          }
-         
+         for (size_t i = 0; i < 4; i++) {
+             previous.computer[i] = r.computer[i];
+         }
          return r;
      }
 
@@ -143,9 +232,13 @@ private:
     unsigned char memory[4];
     unsigned char checking[4];
     unsigned char index[4];
+    CowsAndBullsComputerHelper previous;
     unsigned char c = 0;
     bool end = true;
-    const unsigned char substitute = 1;
+    bool end1 = false;
+    bool start = false;
+    bool start1 = false;
+    unsigned char substitute = 0;
     int i = -1;
     int j = -1;
 };
@@ -202,7 +295,7 @@ int main() {
     CowsAndBullsLivePlayer p2(n);
     exit = false;
     do {
-        t = p1.computer_guessing(p, t);
+        t = p1.computer_guessing(p,t);
         p = p2.Ask(t.computer);
     } while (p.bulls != 4);
     //} while (p.bulls != 4);
