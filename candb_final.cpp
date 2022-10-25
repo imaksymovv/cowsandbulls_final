@@ -126,11 +126,6 @@ public:
                          }
                      }
                  }
-                 end1 = false;
-                 if (end1 == false) {
-                     b = k.bulls;
-                     end1 = true;
-                 }
                  for (size_t i = 0; i < 4; i++) {
                      previous.computer[i] = r.computer[i];
                  }
