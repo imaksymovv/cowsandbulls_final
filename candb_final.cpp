@@ -21,7 +21,8 @@ struct CowsAndBullsComputerHelper {
     {}
 };
 
-unsigned char substitute_creating(unsigned char substitute, CowsAndBullsComputerHelper r) {
+unsigned char substitute_creating(CowsAndBullsComputerHelper r) {
+    unsigned char substitute = 0;
     for (size_t i = 0; i < 4; i++) {
         substitute = 1 + rand() % 9;
         for (int j = 0; j < 4; j++) {
@@ -71,7 +72,7 @@ public:
          if (number_have_bulls == false) {
              if (k.bulls >= 1) {
                  number_have_bulls = true;
-                 substitute = substitute_creating(substitute, r);
+                 substitute = substitute_creating(r);
                  return r;
              }
              for (int i = 0; i < 4; ++i) {
@@ -130,7 +131,7 @@ public:
                  for (size_t i = 0; i < 4; i++) {
                      memory[i] = r.computer[i];
                  }
-                 substitute = substitute_creating(substitute, r);
+                 substitute = substitute_creating(r);
                  previous = r;
                  return r;
              }
@@ -153,7 +154,7 @@ public:
              if (bull_founded == true) {
                  if (index_when_bulls_founded == -1) {
                      number_of_bulls1 = k.bulls;
-                     substitute = substitute_creating(substitute, r);
+                     substitute = substitute_creating(r);
                  }
                  for (size_t i = 0; i < 4; i++) {
                      r.computer[i] = memory[i];
@@ -204,7 +205,7 @@ public:
                          for (size_t i = 0; i < 4; i++) {
                              memory[i] = r.computer[i];
                          }
-                         substitute = substitute_creating(substitute, r);
+                         substitute = substitute_creating(r);
                          bull_founded = false;
                          index_when_bulls_founded = -1;
                          previous = r;
@@ -302,7 +303,7 @@ public:
                          }
                      }
                  }
-                 substitute = substitute_creating(substitute, r);
+                 substitute = substitute_creating(r);
                  for (size_t i = 0; i < 4; i++) {
                      memory[i] = r.computer[i];
                  }
