@@ -146,27 +146,7 @@ public:
              }
              searching_for_bulls_index++;
              if (searching_for_bulls_index == 4) {
-                 for (size_t i = 0; i < 4; i++) {
-                     if (founded_bulls[i] == 1) {
-                         r.computer[i] = checking[i];
-                         for (size_t j = 0; j < i; j++) {
-                             if (r.computer[i] == r.computer[j]) {
-                                 do {
-                                     r.computer[j] = 1 + rand() % 9;
-                                 } while (r.computer[i] == r.computer[j]);
-                             }
-                         }
-                     }
-                     else {
-                         r.computer[i] = 1 + rand() % 9;
-                         for (size_t t = 0; t < i; t++) {
-                             if (r.computer[i] == r.computer[t]) {
-                                 i--;
-                                 break;
-                             }
-                         }
-                     }
-                 }
+                 r = number_including_bulls_creating(r, founded_bulls, checking);
                  for (size_t i = 0; i < 4; i++) {
                      memory[i] = r.computer[i];
                  }
@@ -251,13 +231,13 @@ public:
                      r.computer[i] = memory[i];
                  }
                  do{
-                 index_when_cows_founded++;
-                 if (index_when_cows_founded == 4) {
-                     index_when_cows_founded = -1;
-                     cows_founded = false;
-                     previous = r;
-                     return r;
-                 }
+                    index_when_cows_founded++;
+                    if (index_when_cows_founded == 4) {
+                        index_when_cows_founded = -1;
+                        cows_founded = false;
+                        previous = r;
+                        return r;
+                    }
                  } while (founded_bulls[index_when_cows_founded] == 1);
                  r.computer[index_when_cows_founded] = substitute;
                  previous = r;
