@@ -213,15 +213,15 @@ public:
                  number_of_cows = 0;
                  cows_checker = memory_for_number[index_when_cows_founded];
                  for (size_t i = 0; i < 4; i++) {
-                     memory_for_number[index_when_cows_founded] = 1 + rand() % 9;
+                     memory_for_number[i] = 1 + rand() % 9;
                      for (int j = 0; j < 4; j++) {
-                         if (memory_for_number[index_when_cows_founded] == r.computer[j]) {
+                         if (memory_for_number[i] == r.computer[j]) {
                              i--;
                              break;
                          }
                      }
                  }
-                 index_when_cows_founded = -1;
+                 index_when_cows_founded = 0;
                  cows_founded = false;
                  start_substitution = true;
              }
