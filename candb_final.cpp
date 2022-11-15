@@ -221,28 +221,27 @@ public:
                          }
                      }
                  }
-                 index_when_cows_founded = 0;
+                 index_when_cows_founded = -1;
                  cows_founded = false;
                  start_substitution = true;
              }
              if (cows_founded == true) {
-                 if (index_when_cows_founded == 0) {
+                 if (index_when_cows_founded == -1) {
                      number_of_cows = k.cows;
                  }
                  for (size_t i = 0; i < 4; i++) {
                      r.computer[i] = memory_for_number[i];
                  }
-                 while (founded_bulls[index_when_cows_founded] == 1){
+                 do{
                     index_when_cows_founded++;
                     if (index_when_cows_founded == 4) {
-                        index_when_cows_founded = 0;
+                        index_when_cows_founded = -1;
                         cows_founded = false;
                         previous = r;
                         return r;
                     }
-                 } 
+                 } while (founded_bulls[index_when_cows_founded] == 1);
                  r.computer[index_when_cows_founded] = substitute;
-                 index_when_cows_founded++;
                  previous = r;
                  return r;
              }
@@ -296,7 +295,7 @@ private:
     unsigned char substitute = 0;
     int searching_for_bulls_index = -1;
     int index_for_substitution = 0;
-    int index_when_cows_founded = 0;
+    int index_when_cows_founded = -1;
     int index_when_bulls_founded = -1;
 };
 
