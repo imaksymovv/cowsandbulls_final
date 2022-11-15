@@ -69,11 +69,11 @@ private:
 
 class CowsAndBullsComputerPlayer : public CowsAndBullsPlayer {
 public:
-    CowsAndBullsComputerHelper number_including_bulls_creating(unsigned char founded_bulls[4], unsigned char checking[4]) {
+    CowsAndBullsComputerHelper number_including_bulls_creating() {
         CowsAndBullsComputerHelper r;
         for (size_t i = 0; i < 4; i++) {
             if (founded_bulls[i] == 1) {
-                r.computer[i] = checking[i];
+                r.computer[i] = memory_for_bulls[i];
                 for (size_t j = 0; j < i; j++) {
                     if (r.computer[i] == r.computer[j]) {
                         do {
@@ -148,7 +148,7 @@ public:
              }
              searching_for_bulls_index++;
              if (searching_for_bulls_index == 4) {
-                 r = number_including_bulls_creating(founded_bulls, memory_for_bulls);
+                 r = number_including_bulls_creating();
                  for (size_t i = 0; i < 4; i++) {
                      memory_for_number[i] = r.computer[i];
                  }
@@ -191,7 +191,7 @@ public:
                  do {
                      index_when_bulls_founded++;
                      if (index_when_bulls_founded == 4) {
-                         r = number_including_bulls_creating(founded_bulls, memory_for_bulls);
+                         r = number_including_bulls_creating();
                          for (size_t i = 0; i < 4; i++) {
                              memory_for_number[i] = r.computer[i];
                          }
@@ -266,7 +266,7 @@ public:
              }
 
              if(k.cows == 0 && bull_founded == false) {
-                 r = number_including_bulls_creating(founded_bulls, memory_for_bulls);
+                 r = number_including_bulls_creating();
                  substitute = substitute_creating(r);
                  for (size_t i = 0; i < 4; i++) {
                      memory_for_number[i] = r.computer[i];
