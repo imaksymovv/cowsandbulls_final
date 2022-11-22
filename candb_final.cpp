@@ -78,15 +78,12 @@ public:
         }
         for (size_t i = 0; i < 4; i++) {
             if (founded_bulls[i] != 1) {
-                r.computer[i] = 1 + rand() % 9;
+                do {
+                    r.computer[i] = 1 + rand() % 9;
+                    index_for_false_numbers = r.computer[i] - 1;
+                } while (false_numbers[index_for_false_numbers] == true);
                 for (size_t t = 0; t < i; t++) {
                     if (r.computer[i] == r.computer[t]) {
-                        i--;
-                        break;
-                    }
-                }
-                for (size_t j = 0; j < 9; j++) {
-                    if (r.computer[i] == false_numbers[j]) {
                         i--;
                         break;
                     }
@@ -101,6 +98,9 @@ public:
          r = previous;
          if (number_have_bulls == false) {
              if (k.bulls >= 1) {
+                 for (size_t i = 0; i < 9; i++) {
+                     false_numbers[i] = false;
+                 }
                  number_have_bulls = true;
                  substitute = substitute_creating(r);
              }
@@ -129,15 +129,15 @@ public:
                  memory_for_bulls[searching_for_bulls_index] = memory_for_number[searching_for_bulls_index];
                  founded_bulls[searching_for_bulls_index] = 1;
 
-                 false_numbers[index_for_false_numbers] = memory_for_bulls[searching_for_bulls_index];
-                 index_for_false_numbers++;
+                 index_for_false_numbers = memory_for_bulls[searching_for_bulls_index] - 1;
+                 false_numbers[index_for_false_numbers] = true;
              }
              if (k.bulls > number_of_bulls) {
                  memory_for_bulls[searching_for_bulls_index] = r.computer[searching_for_bulls_index];
                  founded_bulls[searching_for_bulls_index] = 1;
 
-                 false_numbers[index_for_false_numbers] = memory_for_bulls[searching_for_bulls_index];
-                 index_for_false_numbers++;
+                 index_for_false_numbers = memory_for_bulls[searching_for_bulls_index] - 1;
+                 false_numbers[index_for_false_numbers] = true;
                  new_bull++;
              }
              for (size_t i = 0; i < 4; i++) {
@@ -184,16 +184,16 @@ public:
                      memory_for_bulls[index_when_bulls_founded] = r.computer[index_when_bulls_founded];
                      founded_bulls[index_when_bulls_founded] = 1;
 
-                     false_numbers[index_for_false_numbers] = memory_for_bulls[index_when_bulls_founded];
-                     index_for_false_numbers++;
+                     index_for_false_numbers = memory_for_bulls[index_when_bulls_founded] - 1;
+                     false_numbers[index_for_false_numbers] = true;
                  }
                  if (k.bulls > number_of_bulls1) {
                      memory_for_bulls[index_when_bulls_founded] = substitute;
                      founded_bulls[index_when_bulls_founded] = 1;
 
                      substitute = substitute_creating(r);
-                     false_numbers[index_for_false_numbers] = memory_for_bulls[index_when_bulls_founded];
-                     index_for_false_numbers++;
+                     index_for_false_numbers = memory_for_bulls[index_when_bulls_founded] - 1;
+                     false_numbers[index_for_false_numbers] = true;
                  }
                  do {
                      index_when_bulls_founded++;
@@ -268,11 +268,11 @@ public:
                  return r;
              }
 
-             if(k.cows == 0 && bull_founded == false) {
+             if(k.cows == 0 && bull_founded == false && cows_founded == false && start_substitution == false) {
                  for (size_t i = 0; i < 4; i++) {
                      if (founded_bulls[i] != 1) {
-                         false_numbers[index_for_false_numbers] = r.computer[i];
-                         index_for_false_numbers++;
+                         index_for_false_numbers = r.computer[i] - 1;
+                         false_numbers[index_for_false_numbers] = true;
                      }
                  }
                  r = number_including_bulls_creating();
@@ -308,7 +308,7 @@ private:
     int index_for_substitution = -1;
     int index_when_cows_founded = -1;
     int index_when_bulls_founded = -1;
-    unsigned char false_numbers[9];
+    bool false_numbers[9];
     int index_for_false_numbers = 0;
     unsigned char new_bull = 0;
 };
