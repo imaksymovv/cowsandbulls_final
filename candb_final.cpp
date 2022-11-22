@@ -74,29 +74,19 @@ public:
         for (size_t i = 0; i < 4; i++) {
             if (founded_bulls[i] == 1) {
                 r.computer[i] = memory_for_bulls[i];
-                for (size_t j = 0; j < i; j++) {
-                    if (r.computer[i] == r.computer[j]) {
-                        do {
-                            r.computer[j] = 1 + rand() % 9;
-                        } while (r.computer[i] == r.computer[j]);
-                    }
-                }
-                for (size_t t = 0; t < 4; t++) {
-                    if (founded_bulls[t] != 1) {
-                        for (size_t j = 0; j < 4; j++) {
-                            if (t != j) {
-                                while (r.computer[t] == r.computer[j]) {
-                                    r.computer[t] = 1 + rand() % 9;
-                                }
-                            }
-                        }
-                    }
-                }
             }
-            else {
+        }
+        for (size_t i = 0; i < 4; i++) {
+            if (founded_bulls[i] != 1) {
                 r.computer[i] = 1 + rand() % 9;
-                for (size_t j = 0; j < i; j++) {
-                    if (r.computer[i] == r.computer[j]) {
+                for (size_t t = 0; t < i; t++) {
+                    if (r.computer[i] == r.computer[t]) {
+                        i--;
+                        break;
+                    }
+                }
+                for (size_t j = 0; j < 9; j++) {
+                    if (r.computer[i] == false_numbers[j]) {
                         i--;
                         break;
                     }
@@ -138,16 +128,24 @@ public:
              if (k.bulls < number_of_bulls) {
                  memory_for_bulls[searching_for_bulls_index] = memory_for_number[searching_for_bulls_index];
                  founded_bulls[searching_for_bulls_index] = 1;
+
+                 false_numbers[index_for_false_numbers] = memory_for_bulls[searching_for_bulls_index];
+                 index_for_false_numbers++;
              }
              if (k.bulls > number_of_bulls) {
                  memory_for_bulls[searching_for_bulls_index] = r.computer[searching_for_bulls_index];
                  founded_bulls[searching_for_bulls_index] = 1;
+
+                 false_numbers[index_for_false_numbers] = memory_for_bulls[searching_for_bulls_index];
+                 index_for_false_numbers++;
+                 new_bull++;
              }
              for (size_t i = 0; i < 4; i++) {
                  r.computer[i] = memory_for_number[i];
              }
              searching_for_bulls_index++;
              if (searching_for_bulls_index == 4) {
+                 bulls_before_cows_part = k.bulls + new_bull;
                  r = number_including_bulls_creating();
                  for (size_t i = 0; i < 4; i++) {
                      memory_for_number[i] = r.computer[i];
@@ -163,8 +161,9 @@ public:
                  number_of_bulls = k.bulls;
                  searching_for_cows_started = true;
              }
-             if (k.bulls > number_of_bulls) {
+             if (k.bulls > number_of_bulls || k.bulls > bulls_before_cows_part) {
                  bull_founded = true;
+                 bulls_before_cows_part = k.bulls;
                  number_of_bulls = k.bulls;
                  start_substitution = false;
                  cows_founded = false;
@@ -173,6 +172,7 @@ public:
                  }
              }
              if (bull_founded == true) {
+                 number_of_cows = 0;
                  if (index_when_bulls_founded == -1) {
                      number_of_bulls1 = k.bulls;
                      substitute = substitute_creating(r);
@@ -183,10 +183,17 @@ public:
                  if (k.bulls < number_of_bulls1) {
                      memory_for_bulls[index_when_bulls_founded] = r.computer[index_when_bulls_founded];
                      founded_bulls[index_when_bulls_founded] = 1;
+
+                     false_numbers[index_for_false_numbers] = memory_for_bulls[index_when_bulls_founded];
+                     index_for_false_numbers++;
                  }
                  if (k.bulls > number_of_bulls1) {
                      memory_for_bulls[index_when_bulls_founded] = substitute;
                      founded_bulls[index_when_bulls_founded] = 1;
+
+                     substitute = substitute_creating(r);
+                     false_numbers[index_for_false_numbers] = memory_for_bulls[index_when_bulls_founded];
+                     index_for_false_numbers++;
                  }
                  do {
                      index_when_bulls_founded++;
@@ -206,20 +213,17 @@ public:
                  previous = r;
                  return r;
              }
-             if (k.cows > 0) {
+             if (k.cows > 0 && start_substitution == false && bull_founded == false) {
                  cows_founded = true;
              }
              if (number_of_cows > k.cows) {
                  number_of_cows = 0;
                  cows_checker = memory_for_number[index_when_cows_founded];
+                 do {
+                     r = number_including_bulls_creating();
+                 } while (r.computer[0] == cows_checker || r.computer[1] == cows_checker || r.computer[2] == cows_checker || r.computer[3] == cows_checker);
                  for (size_t i = 0; i < 4; i++) {
-                     memory_for_number[i] = 1 + rand() % 9;
-                     for (int j = 0; j < 4; j++) {
-                         if (memory_for_number[i] == r.computer[j]) {
-                             i--;
-                             break;
-                         }
-                     }
+                     memory_for_number[i] = r.computer[i];
                  }
                  index_when_cows_founded = -1;
                  cows_founded = false;
@@ -249,15 +253,15 @@ public:
                  for (size_t i = 0; i < 4; i++) {
                      r.computer[i] = memory_for_number[i];
                  }
-                 while(founded_bulls[index_for_substitution] == 1){
+                 do{
                      index_for_substitution++;
                      if (index_for_substitution == 4) {
-                         index_for_substitution = 0;
+                         index_for_substitution = -1;
                          start_substitution = false;
                          previous = r;
                          return r;
                      }
-                 }
+                 } while (founded_bulls[index_for_substitution] == 1);
                  r.computer[index_for_substitution] = cows_checker;
                  index_for_substitution++;
                  previous = r;
@@ -265,6 +269,12 @@ public:
              }
 
              if(k.cows == 0 && bull_founded == false) {
+                 for (size_t i = 0; i < 4; i++) {
+                     if (founded_bulls[i] != 1) {
+                         false_numbers[index_for_false_numbers] = r.computer[i];
+                         index_for_false_numbers++;
+                     }
+                 }
                  r = number_including_bulls_creating();
                  substitute = substitute_creating(r);
                  for (size_t i = 0; i < 4; i++) {
@@ -279,6 +289,7 @@ public:
     explicit CowsAndBullsComputerPlayer(unsigned char n[4]) : CowsAndBullsPlayer(n) {}
 
 private:
+    unsigned char bulls_before_cows_part = 0;
     unsigned char number_of_bulls = 0;
     unsigned char number_of_bulls1 = 0;
     unsigned char memory_for_number[4];
@@ -294,9 +305,12 @@ private:
     bool cows_founded = false;
     unsigned char substitute = 0;
     int searching_for_bulls_index = -1;
-    int index_for_substitution = 0;
+    int index_for_substitution = -1;
     int index_when_cows_founded = -1;
     int index_when_bulls_founded = -1;
+    unsigned char false_numbers[9];
+    int index_for_false_numbers = 0;
+    unsigned char new_bull = 0;
 };
 
 class CowsAndBullsLivePlayer : public CowsAndBullsPlayer {
@@ -349,7 +363,6 @@ int main() {
         n[i] = input;
     }
     CowsAndBullsLivePlayer p2(n);
-    exit = false;
     do {
         t = p1.computer_guessing(p);
         for (size_t i = 0; i < 4; i++) {
