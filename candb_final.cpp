@@ -82,12 +82,13 @@ public:
                     r.computer[i] = 1 + rand() % 9;
                     index_for_false_numbers = r.computer[i] - 1;
                 } while (false_numbers[index_for_false_numbers] == true);
-                for (size_t t = 0; t < i; t++) {
-                    if (r.computer[i] == r.computer[t]) {
-                        i--;
-                        break;
-                    }
-                }
+                false_numbers[index_for_false_numbers] == true;
+            }
+        }
+        for (size_t i = 0; i < 4; i++) {
+            if (founded_bulls[i] != 1) {
+                index_for_false_numbers = r.computer[i] - 1;
+                false_numbers[index_for_false_numbers] == false;
             }
         }
         return r;
