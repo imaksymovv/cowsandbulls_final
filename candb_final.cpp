@@ -71,7 +71,7 @@ class CowsAndBullsComputerPlayer : public CowsAndBullsPlayer {
 public:
     CowsAndBullsComputerHelper number_including_bulls_creating() {
         CowsAndBullsComputerHelper r;
-        int index_for_false_numbers = 0;
+        unsigned int index_for_false_numbers = 0;
         for (size_t i = 0; i < 4; i++) {
             if (founded_bulls[i] == 1) {
                 r.computer[i] = memory_for_bulls[i];
@@ -98,7 +98,7 @@ public:
      CowsAndBullsComputerHelper computer_guessing(CowsAndBullsAnswer k) {
          CowsAndBullsComputerHelper r;
          r = previous;
-         int index_for_false_numbers = 0;
+         unsigned int index_for_false_numbers = 0;
          if (number_have_bulls == false) {
              if (k.bulls >= 1) {
                  for (size_t i = 0; i < 9; i++) {
