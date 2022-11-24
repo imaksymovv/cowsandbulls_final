@@ -79,11 +79,15 @@ public:
         }
         for (size_t i = 0; i < 4; i++) {
             if (founded_bulls[i] != 1) {
-                do {
-                    r.computer[i] = 1 + rand() % 9;
-                    index_for_false_numbers = r.computer[i] - 1;
-                } while (false_numbers[index_for_false_numbers] == true);
-                false_numbers[index_for_false_numbers] = true;
+                index_for_false_numbers = 0;
+                for (size_t j = 0; j < 9; j++) {
+                    r.computer[i] = index_for_false_numbers + 1;
+                    index_for_false_numbers++;
+                    if (false_numbers[j] == false) {
+                        false_numbers[j] = true;
+                        break;
+                    }
+                }
             }
         }
         for (size_t i = 0; i < 4; i++) {
@@ -175,6 +179,8 @@ public:
                  }
              }
              if (bull_founded == true) {
+                 std::cout << std::endl;
+                 std::cout << "bulls" << std::endl;
                  number_of_cows = 0;
                  if (index_when_bulls_founded == -1) {
                      number_of_bulls1 = k.bulls;
@@ -233,6 +239,8 @@ public:
                  start_substitution = true;
              }
              if (cows_founded == true) {
+                 std::cout << std::endl;
+                 std::cout << "cows" << std::endl;
                  if (index_when_cows_founded == -1) {
                      number_of_cows = k.cows;
                  }
@@ -253,6 +261,8 @@ public:
                  return r;
              }
              if (start_substitution == true) {
+                 std::cout << std::endl;
+                 std::cout << "subst" << std::endl;
                  for (size_t i = 0; i < 4; i++) {
                      r.computer[i] = memory_for_number[i];
                  }
