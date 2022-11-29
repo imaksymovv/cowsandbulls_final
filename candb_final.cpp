@@ -21,22 +21,26 @@ struct CowsAndBullsComputerHelper {
     {}
 };
 
-
-
 unsigned char substitute_creating(CowsAndBullsComputerHelper r) {
     unsigned char substitute = 0;
-    for (size_t i = 0; i < 4; i++) {
-        substitute = 1 + rand() % 9;
-        for (int j = 0; j < 4; j++) {
+    bool numbers_are_not_same = false;
+    for (size_t i = 0; i < 9; i++) {
+        substitute = i + 1;
+        for (size_t j = 0; j < 4; j++) {
             if (substitute == r.computer[j]) {
-                i--;
+                numbers_are_not_same = false;
                 break;
             }
+            else {
+                numbers_are_not_same = true;
+            }
+        }
+        if (numbers_are_not_same == true) {
+            break;
         }
     }
     return substitute;
 }
-
 
 class CowsAndBullsPlayer {
 public:
@@ -69,6 +73,8 @@ private:
 
 class CowsAndBullsComputerPlayer : public CowsAndBullsPlayer {
 public:
+
+
     CowsAndBullsComputerHelper number_including_bulls_creating() {
         CowsAndBullsComputerHelper r;
         unsigned int index_for_false_numbers = 0;
@@ -80,12 +86,24 @@ public:
         for (size_t i = 0; i < 4; i++) {
             if (founded_bulls[i] != 1) {
                 index_for_false_numbers = 0;
-                for (size_t j = 0; j < 9; j++) {
-                    r.computer[i] = index_for_false_numbers + 1;
-                    index_for_false_numbers++;
-                    if (false_numbers[j] == false) {
-                        false_numbers[j] = true;
-                        break;
+                if (cow_number_substitute == true) {
+                    for (size_t j = 0; j < 9; j++) {
+                        r.computer[i] = index_for_false_numbers + 1;
+                        index_for_false_numbers++;
+                        if (false_numbers[j] == false && r.computer[i] != cows_checker) {
+                            false_numbers[j] = true;
+                            break;
+                        }
+                    }
+                }
+                else {
+                    for (size_t j = 0; j < 9; j++) {
+                        r.computer[i] = index_for_false_numbers + 1;
+                        index_for_false_numbers++;
+                        if (false_numbers[j] == false) {
+                            false_numbers[j] = true;
+                            break;
+                        }
                     }
                 }
             }
@@ -113,7 +131,7 @@ public:
              }
              else {
                  for (int i = 0; i < 4; ++i) {
-                     r.computer[i] = 1 + rand() % 9;
+                     r.computer[i] = 1 + rand() % 9; // how should it mix numbers with each other
                      for (int j = 0; j < i; j++) {
                          if (r.computer[j] == r.computer[i]) {
                              i--;
@@ -228,9 +246,11 @@ public:
              if (number_of_cows > k.cows) {
                  number_of_cows = 0;
                  cows_checker = memory_for_number[index_when_cows_founded];
+                 cow_number_substitute = true;
                  do {
                      r = number_including_bulls_creating();
                  } while (r.computer[0] == cows_checker || r.computer[1] == cows_checker || r.computer[2] == cows_checker || r.computer[3] == cows_checker);
+                 cow_number_substitute = false;
                  for (size_t i = 0; i < 4; i++) {
                      memory_for_number[i] = r.computer[i];
                  }
@@ -323,6 +343,7 @@ private:
     int index_when_bulls_founded = -1;
     bool false_numbers[9];
     unsigned char new_bull = 0;
+    bool cow_number_substitute = false;
 };
 
 class CowsAndBullsLivePlayer : public CowsAndBullsPlayer {
