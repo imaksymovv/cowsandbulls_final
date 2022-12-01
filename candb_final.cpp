@@ -58,6 +58,11 @@ public:
                 }
             }
         }
+        std::cout << std::endl;
+        for (size_t i = 0; i < 4; i++) {
+            std::cout << static_cast<int>(this->number[i]);
+        }
+        std::cout << std::endl;
         return counter;
     }
     unsigned int operator[](size_t index) const {
@@ -73,7 +78,52 @@ private:
 
 class CowsAndBullsComputerPlayer : public CowsAndBullsPlayer {
 public:
-
+    int reshuffle(CowsAndBullsComputerHelper r, bool false_numbers[4]) {
+        CowsAndBullsAnswer k = {};
+        int b = 0;
+        
+        if (index_for_reshuffle == 24) {
+            for (size_t i = 0; i < 4; i++) {
+                b = 0;
+                for (size_t j = 0; j < 9; j++) {
+                    r.computer[i] = b + 1;
+                    b++;
+                    if (false_numbers[j] == false) {
+                        false_numbers[j] = true;
+                        break;
+                    }
+                }
+            }
+        }
+        for (size_t i = 0; i < 4; i++) {
+            memory_for_reshuffle[i] = r.computer[i];
+        }
+        if (index_for_reshuffle == 5 || index_for_reshuffle == 29) {
+            r.computer[0] = memory_for_reshuffle[3];
+            r.computer[3] = memory_for_reshuffle[0];
+        }
+        if (index_for_reshuffle == 11 || index_for_reshuffle == 17 || index_for_reshuffle == 35 || index_for_reshuffle == 41) {
+            r.computer[0] = memory_for_reshuffle[2];
+            r.computer[2] = memory_for_reshuffle[0];
+        }
+        else if (index_for_reshuffle % 2 != 0) {
+            r.computer[1] = memory_for_reshuffle[2];
+            r.computer[2] = memory_for_reshuffle[1];
+        }
+        else {
+            r.computer[2] = memory_for_reshuffle[3];
+            r.computer[3] = memory_for_reshuffle[2];
+        }
+        index_for_reshuffle++;
+        k = Ask(r.computer);
+        std::cout << "bulls :" << static_cast<int>(k.bulls) << std::endl;
+        if (k.bulls >= 1) {
+            return 0;
+        }
+        else {
+            return reshuffle(r, false_numbers);
+        }
+    }
 
     CowsAndBullsComputerHelper number_including_bulls_creating() {
         CowsAndBullsComputerHelper r;
@@ -130,14 +180,33 @@ public:
                  substitute = substitute_creating(r);
              }
              else {
-                 for (int i = 0; i < 4; ++i) {
-                     r.computer[i] = 1 + rand() % 9; // how should it mix numbers with each other
+                 for (size_t i = 0; i < 9; i++) {
+                     false_numbers[i] = false;
+                 }
+                 /*for (int i = 0; i < 4; ++i) {
+                     r.computer[i] = 1 + rand() % 9;
                      for (int j = 0; j < i; j++) {
                          if (r.computer[j] == r.computer[i]) {
                              i--;
                              break;
                          }
                      }
+                 }*/
+                 for (size_t i = 0; i < 4; i++) {
+                     index_for_false_numbers = 0;
+                     for (size_t j = 0; j < 9; j++) {
+                         r.computer[i] = index_for_false_numbers + 1;
+                         index_for_false_numbers++;
+                         if (false_numbers[j] == false) {
+                             false_numbers[j] = true;
+                             break;
+                         }
+                     }
+                 }
+                 reshuffle(r, false_numbers);
+                 std::cout << std::endl;
+                 for (size_t i = 0; i < 4; i++) {
+                     std::cout << static_cast<int>(r.computer[i]);
                  }
                  for (size_t i = 0; i < 4; i++) {
                      memory_for_number[i] = r.computer[i];
@@ -344,6 +413,8 @@ private:
     bool false_numbers[9];
     unsigned char new_bull = 0;
     bool cow_number_substitute = false;
+    unsigned int index_for_reshuffle;
+    unsigned char memory_for_reshuffle[4];
 };
 
 class CowsAndBullsLivePlayer : public CowsAndBullsPlayer {
